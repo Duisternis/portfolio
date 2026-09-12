@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Row from '../../components/Row.astro';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => b.data.order - a.data.order || b.data.year.localeCompare(a.data.year),
+);
+
+const counts = projects.reduce<Record<string, number>>((acc, project) => {
+  acc[project.data.status] = (acc[project.data.status] ?? 0) + 1;
+  return acc;
+}, {});
+---
+
+<Base title="projects" description="selected projects by varnan matela.">
+  {
+    projects.map((project) => (
+      <Row
+        meta={`${project.data.year}  ${project.data.status}`}
+        title={project.data.title}
+        aside={project.data.tech.join('  ')}
+        href={`/projects/${project.id}`}
+      >
+        {project.data.summary}
+      </Row>
+    ))
+  }
+
+  <div slot="meta">
+    <p class="key">count</p>
+    {Object.entries(counts).map(([status, count]) => (
+      <p class="tally"><span class="tally-n">{count}</span>{status}</p>
+    ))}
+  </div>
+</Base>
+
+<style>
+
+  .tally {
+    display: flex;
+    gap: 2ch;
+  }
+
+  .tally-n {
+    color: var(--color-accent);
+  }
+</style>

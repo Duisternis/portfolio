@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Row from '../components/Row.astro';
+
+const channels = [
+  { meta: 'mail', title: 'nightisbad1@gmail.com', href: 'mailto:nightisbad1@gmail.com', desc: 'fastest route. i read everything.' },
+  { meta: 'github', title: 'github.com/Duisternis', href: 'https://github.com/Duisternis', desc: 'public repos.' },
+  { meta: 'linkedin', title: 'linkedin.com/in/varnan-matela', href: 'https://www.linkedin.com/in/varnan-matela', desc: 'work history, same as the about page.' },
+];
+---
+
+<Base title="contact" description="how to reach varnan matela.">
+  {channels.map((item) => <Row meta={item.meta} title={item.title} href={item.href}>{item.desc}</Row>)}
+
+  <div slot="meta">
+    <p class="key">timezone</p>
+    <p>ist, utc+5:30</p>
+    <p class="key gap">reply</p>
+    <p>a day or two</p>
+  </div>
+</Base>
+

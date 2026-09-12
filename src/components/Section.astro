@@ -1,0 +1,35 @@
+---
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<section class="section" id={label.toLowerCase().replace(/\s+/g, '-')}>
+  <h2 class="head">{label}</h2>
+  <div class="content">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+
+  .head {
+    display: flex;
+    gap: 2ch;
+    margin-bottom: calc(var(--spacing) * 2);
+    text-transform: uppercase;
+  }
+
+  .idx {
+    color: var(--color-accent);
+  }
+
+  .content {
+    padding-left: 4ch;
+  }
+</style>

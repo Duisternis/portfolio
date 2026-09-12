@@ -1,0 +1,182 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const nav = [
+  { href: '/about', label: 'about' },
+  { href: '/projects', label: 'projects' },
+  { href: '/blog', label: 'blog' },
+  { href: '/contact', label: 'contact' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const links = [
+  { label: 'github', href: 'https://github.com/Duisternis' },
+  { label: 'linkedin', href: 'https://www.linkedin.com/in/varnan-matela' },
+  { label: 'mail', href: 'mailto:nightisbad1@gmail.com' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <div class="frame">
+      <div class="rail rail-left">
+        <div class="block">
+          <a class="ident" href="/">varnan matela</a>
+          <p class="dim">engineer</p>
+        </div>
+
+        <nav class="block">
+          {
+            nav.map((item) => (
+              <a
+                class="nav"
+                href={item.href}
+                aria-current={path.startsWith(item.href) ? 'page' : undefined}
+              >
+                <span class="mark">{path.startsWith(item.href) ? '>' : ' '}</span>
+                <span>{item.label}</span>
+              </a>
+            ))
+          }
+        </nav>
+
+        <div class="block">
+          {
+            links.map((link) => (
+              <a
+                class="link"
+                href={link.href}
+                target={link.href.startsWith('mailto:') ? undefined : '_blank'}
+                rel={link.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <main class="main">
+        <h1 class="title">{title}</h1>
+        <slot />
+      </main>
+
+      <div class="rail rail-right">
+        <slot name="meta" />
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .frame {
+    display: grid;
+    grid-template-columns: var(--col-left) var(--col-main) var(--col-right);
+    gap: var(--gutter);
+    width: max-content;
+    margin: 0 auto;
+    padding: calc(var(--spacing) * 6) var(--gutter) calc(var(--spacing) * 12);
+  }
+
+  .rail {
+    position: sticky;
+    top: calc(var(--spacing) * 6);
+    align-self: start;
+    color: var(--color-text-2);
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+
+  .ident {
+    color: var(--color-text);
+    text-transform: uppercase;
+  }
+
+  .ident:hover {
+    color: var(--color-accent-2);
+  }
+
+  .dim {
+    margin-top: calc(var(--spacing) / 2);
+    color: var(--color-text-3);
+  }
+
+  .nav {
+    display: flex;
+    gap: 1ch;
+    color: var(--color-text-2);
+  }
+
+  .mark {
+    color: var(--color-accent);
+    white-space: pre;
+  }
+
+  .nav:hover,
+  .nav[aria-current='page'] {
+    color: var(--color-accent);
+  }
+
+  .link {
+    color: var(--color-text-3);
+  }
+
+  .link:hover {
+    color: var(--color-accent);
+  }
+
+  .main {
+    min-width: 0;
+  }
+
+  .title {
+    margin-bottom: calc(var(--spacing) / 2);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 1180px) {
+    .frame {
+      grid-template-columns: var(--col-main);
+      width: max-content;
+      row-gap: calc(var(--spacing) * 6);
+    }
+
+    .rail {
+      position: static;
+    }
+
+    .rail-left {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .frame {
+      grid-template-columns: minmax(0, 1fr);
+      width: 100%;
+      padding: calc(var(--spacing) * 3) 2ch calc(var(--spacing) * 8);
+      row-gap: calc(var(--spacing) * 4);
+    }
+
+    .main {
+      max-width: none;
+    }
+  }
+</style>

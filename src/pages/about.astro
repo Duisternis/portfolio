@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+import Section from '../components/Section.astro';
+import Entry from '../components/Entry.astro';
+
+const work = [
+  {
+    name: 'zscaler',
+    href: 'https://www.zscaler.com',
+    logo: 'zscaler',
+    roles: [
+      {
+        title: 'software development engineer',
+        dates: ['aug 26', 'present'],
+        current: true,
+        facts: ['full-time', 'hybrid', '2 mos'],
+        note: 'zero trust browser (mobile)',
+      },
+      {
+        title: 'intern, r&d',
+        dates: ['feb 26', 'aug 26'],
+        facts: ['internship', 'on-site', '7 mos'],
+      },
+    ],
+  },
+  {
+    name: 'squarex',
+    href: 'https://sqrx.com',
+    logo: 'squarex',
+    roles: [
+      {
+        title: 'sde intern, r&d',
+        dates: ['aug 25', 'feb 26'],
+        facts: ['internship', 'on-site', '7 mos'],
+        note: '<a href="https://browserextensionanalyzer.com" target="_blank" rel="noopener noreferrer">browser extension analyser (bdr)</a>. acquired by zscaler.',
+      },
+    ],
+  },
+  {
+    name: 'aithent inc.',
+    logo: 'aithent',
+    roles: [
+      {
+        title: 'summer intern',
+        dates: ['jun 25', 'jul 25'],
+        facts: ['internship', 'remote', '2 mos'],
+      },
+    ],
+  },
+  {
+    name: 'biocortex healthcare',
+    roles: [
+      {
+        title: 'freelance web developer',
+        dates: ['feb 25', 'apr 25'],
+        facts: ['freelance', 'remote', '3 mos'],
+        desc: 'developed their <a href="http://biocortex.in" target="_blank" rel="noopener noreferrer">primary website</a>.',
+      },
+    ],
+  },
+];
+
+const education = [
+  {
+    name: 'jaypee university of information technology',
+    logo: 'juit',
+    roles: [
+      {
+        title: 'b.tech, computer science and engineering',
+        dates: ['2022', '2026'],
+        current: true,
+        facts: ['cgpa 9.21'],
+        note: 'solan, himachal pradesh',
+      },
+    ],
+  },
+  {
+    name: 'cbse',
+    roles: [
+      {
+        title: 'intermediate, pcm with computer science',
+        dates: ['2021', '2022'],
+        facts: ['93%'],
+      },
+    ],
+  },
+  {
+    roles: [
+      {
+        title: 'gate 2025, computer science',
+        dates: ['2025'],
+        facts: ['air 7286', 'score 493'],
+      },
+    ],
+  },
+];
+
+const activities = [
+  {
+    name: 'ieee student branch, juit',
+    roles: [
+      {
+        title: 'lead web developer',
+        dates: ['2023', '2025'],
+        desc: 'developed and maintained websites for major ieee events, including r&d expo, robotrix, and enigma.',
+        links: [
+          { label: 'chromecraft masterclass', href: 'https://events.vtools.ieee.org/m/410972' },
+          { label: 'in the loop', href: 'https://events.vtools.ieee.org/m/339061' },
+          { label: 'iciip 2025', href: 'https://juit.ac.in/iciip_2025test' },
+        ],
+      },
+    ],
+  },
+];
+---
+
+<Base title="about" description="experience and education of varnan matela.">
+  <p class="lede">I build software, and mostly care about the footnotes.</p>
+
+  <Section label="work">
+    {work.map((entry) => <Entry {...entry} />)}
+  </Section>
+
+  <Section label="education">
+    {education.map((entry) => <Entry {...entry} />)}
+  </Section>
+
+  <Section label="activities">
+    {activities.map((entry) => <Entry {...entry} />)}
+  </Section>
+
+  <div slot="meta">
+    <p class="key">sections</p>
+    <p><a href="#work">work</a></p>
+    <p><a href="#education">education</a></p>
+    <p><a href="#activities">activities</a></p>
+  </div>
+</Base>
+
+<style>
+  .lede {
+    color: var(--color-text-2);
+    margin-bottom: calc(var(--spacing) * 5);
+  }
+
+</style>

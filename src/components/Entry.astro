@@ -1,0 +1,253 @@
+---
+interface Role {
+  title: string;
+  dates?: [string] | [string, string];
+  current?: boolean;
+  facts?: string[];
+  note?: string;
+  desc?: string;
+  links?: { label: string; href: string }[];
+}
+
+interface Props {
+  name?: string;
+  href?: string;
+  logo?: string;
+  roles: Role[];
+}
+
+const { name, href, logo, roles } = Astro.props;
+const Name = href ? 'a' : 'span';
+const external = { target: '_blank', rel: 'noopener noreferrer' };
+const grouped = roles.length > 1;
+const [single] = roles;
+---
+
+<article class="entry">
+  {logo && <span class="logo" style={`--logo: url(/logos/${logo}.png)`} />}
+  {
+    grouped ? (
+      <>
+        <h3 class="lead-name"><Name class="org" href={href} {...(href ? external : {})}>{name}</Name></h3>
+        <div class="roles">
+          {roles.map((role) => (
+            <div class:list={['role', role.current && 'current']}>
+              <div class="line">
+                <span class="lead-role">{role.title}</span>
+                {role.dates && (
+                  <span class="dates">
+                    <span class="from">{role.dates.length > 1 ? role.dates[0] : ''}</span>
+                    <span class="to">{role.dates.at(-1)}</span>
+                  </span>
+                )}
+              </div>
+              {role.facts && (
+                <div class="facts">
+                  {role.facts.map((fact) => (
+                    <span class="fact">{fact}</span>
+                  ))}
+                </div>
+              )}
+              {role.note && <p class="sub" set:html={role.note} />}
+              {role.desc && <p class="desc" set:html={role.desc} />}
+            </div>
+          ))}
+        </div>
+      </>
+    ) : (
+      <div class:list={['solo', single.current && 'current']}>
+        <div class="line">
+          <h3 class="lead-role">{single.title}</h3>
+          {single.dates && (
+            <span class="dates">
+              <span class="from">{single.dates.length > 1 ? single.dates[0] : ''}</span>
+              <span class="to">{single.dates.at(-1)}</span>
+            </span>
+          )}
+        </div>
+        {name && <p class="sub"><Name class="org" href={href} {...(href ? external : {})}>{name}</Name></p>}
+        {single.note && <p class="sub" set:html={single.note} />}
+        {single.facts && (
+          <div class="facts">
+            {single.facts.map((fact) => (
+              <span class="fact">{fact}</span>
+            ))}
+          </div>
+        )}
+        {single.desc && <p class="desc" set:html={single.desc} />}
+        {single.links && (
+          <p class="links">
+            {single.links.map((link) => (
+              <a href={link.href} {...external}>
+                {link.label}
+              </a>
+            ))}
+          </p>
+        )}
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .entry {
+    position: relative;
+    padding-left: 6ch;
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+
+  .logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+    background: var(--color-text-2);
+    mask: var(--logo) center / contain no-repeat;
+    -webkit-mask: var(--logo) center / contain no-repeat;
+  }
+
+  .lead-name,
+  .lead-role {
+    color: var(--color-text);
+    text-transform: uppercase;
+  }
+
+  .roles {
+    margin-top: var(--spacing);
+  }
+
+  .role {
+    position: relative;
+    padding-left: 3ch;
+  }
+
+  .role + .role {
+    margin-top: calc(var(--spacing) * 2);
+  }
+
+  .role::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border: 1px solid var(--color-text-3);
+  }
+
+  .role.current::before {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+
+  .role:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    bottom: calc(var(--spacing) * -2 - 7px);
+    left: 2px;
+    width: 1px;
+    background: var(--color-border);
+  }
+
+  .role .lead-role {
+    color: var(--color-text-2);
+    text-transform: none;
+  }
+
+  .role.current .lead-role,
+  .role.current .dates {
+    color: var(--color-accent);
+  }
+
+  .line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 16ch;
+    gap: 2ch;
+  }
+
+  .dates {
+    display: grid;
+    grid-template-columns: 7ch 7ch;
+    gap: 2ch;
+    color: var(--color-text-2);
+    white-space: nowrap;
+  }
+
+  .from,
+  .to {
+    text-align: right;
+  }
+
+  .sub {
+    color: var(--color-text-3);
+  }
+
+  .org {
+    color: inherit;
+  }
+
+  a.org:hover {
+    color: var(--color-accent);
+  }
+
+  .facts {
+    display: flex;
+    color: var(--color-text-3);
+  }
+
+  .fact {
+    flex: 0 0 12ch;
+  }
+
+  .fact + .fact {
+    flex-basis: 9ch;
+  }
+
+  .fact + .fact + .fact {
+    flex: 0 0 auto;
+  }
+
+  .desc {
+    color: var(--color-text-2);
+  }
+
+  .links {
+    display: flex;
+    gap: 3ch;
+  }
+
+  @media (max-width: 700px) {
+    .entry {
+      padding-left: 5ch;
+    }
+
+    .logo {
+      width: 28px;
+      height: 28px;
+    }
+
+    .line {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .dates {
+      grid-template-columns: 8ch 8ch;
+      justify-content: start;
+    }
+
+    .facts {
+      flex-wrap: wrap;
+    }
+
+    .fact {
+      flex: 0 0 11ch;
+    }
+
+    .fact + .fact {
+      flex-basis: 9ch;
+    }
+  }
+</style>

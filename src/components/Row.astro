@@ -1,0 +1,78 @@
+---
+interface Props {
+  meta: string;
+  title: string;
+  aside?: string;
+  href?: string;
+}
+
+const { meta, title, aside, href } = Astro.props;
+const Title = href ? 'a' : 'span';
+const remote = !!href && !href.startsWith('/') && !href.startsWith('mailto:');
+---
+
+<div class="row">
+  <div class="line">
+    <span class="meta">{meta}</span>
+    <Title
+      class="title"
+      href={href}
+      target={remote ? '_blank' : undefined}
+      rel={remote ? 'noopener noreferrer' : undefined}
+    >
+      {title}
+    </Title>
+    {aside && <span class="aside">{aside}</span>}
+  </div>
+  <p class="desc">
+    <slot />
+  </p>
+</div>
+
+<style>
+  .row {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
+
+  .line {
+    display: flex;
+    gap: 2ch;
+  }
+
+  .meta {
+    flex: 0 0 20ch;
+    color: var(--color-text-2);
+  }
+
+  .title {
+    flex: 1 1 auto;
+    color: var(--color-text);
+  }
+
+  a.title:hover {
+    color: var(--color-accent-2);
+  }
+
+  .aside {
+    color: var(--color-text-3);
+  }
+
+  .desc {
+    padding-left: 22ch;
+    color: var(--color-text-2);
+  }
+
+  @media (max-width: 700px) {
+    .line {
+      flex-wrap: wrap;
+    }
+
+    .meta {
+      flex: 0 0 100%;
+    }
+
+    .desc {
+      padding-left: 0;
+    }
+  }
+</style>

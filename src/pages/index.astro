@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Row from '../components/Row.astro';
+
+const now = [
+  { meta: 'work', title: 'zscaler', desc: 'r&d and internal tooling for browser security and zero-trust' },
+  { meta: 'study', title: 'juit solan', desc: 'b.tech computer science, final year' },
+  { meta: 'reading', title: 'operating systems', desc: 'schedulers, page tables, the parts that bite' },
+];
+---
+
+<Base title="index" description="software engineer. cloud and browser security, internal tooling.">
+  <p class="lede">
+    software engineer at zscaler. cloud and browser security, internal tooling. mostly
+    python, typescript, and c.
+  </p>
+
+  <div class="now">
+    {now.map((item) => <Row meta={item.meta} title={item.title}>{item.desc}</Row>)}
+  </div>
+
+  <div slot="meta">
+    <p class="key">status</p>
+    <p>employed</p>
+    <p>not looking</p>
+    <p class="key gap">location</p>
+    <p>india</p>
+  </div>
+</Base>
+
+<style>
+  .lede {
+    color: var(--color-text-2);
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+
+</style>
