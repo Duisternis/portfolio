@@ -4,7 +4,7 @@ import { theme, codeLabel } from './src/lib/shiki.ts';
 import { sketchPlugin } from './src/lib/sketch.ts';
 
 export default defineConfig({
-  site: 'https://varnan.dev',
+  site: 'https://varnan.zip',
   markdown: {
     processor: satteri({ mdastPlugins: [sketchPlugin] }),
     shikiConfig: {
