@@ -27,3 +27,137 @@ const stamp = post.data.date.toISOString().slice(0, 10).replace(/-/g, '.');
   </div>
 </Base>
 
+<script>
+  const diagrams = document.querySelectorAll<SVGSVGElement>('svg.sketch');
+
+  if (diagrams.length > 0) {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ease = still ? '' : `transform var(--duration), opacity var(--duration)`;
+
+    const open = (source: SVGSVGElement) => {
+      const width = source.width.baseVal.value;
+      const height = source.height.baseVal.value;
+      const from = source.getBoundingClientRect();
+
+      const viewer = document.createElement('div');
+      viewer.className = 'sketch-viewer';
+      const stage = document.createElement('div');
+      stage.className = 'sketch-stage';
+      stage.append(source.cloneNode(true));
+      viewer.append(stage);
+      document.body.append(viewer);
+      document.body.style.overflow = 'hidden';
+
+      let scale = from.width / width;
+      let x = from.left;
+      let y = from.top;
+
+      const draw = () => {
+        stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      };
+
+      const fit = () => {
+        const room = 0.92;
+        scale = Math.min((innerWidth * room) / width, (innerHeight * room) / height);
+        x = (innerWidth - width * scale) / 2;
+        y = (innerHeight - height * scale) / 2;
+      };
+
+      draw();
+      stage.style.transition = ease;
+
+      requestAnimationFrame(() => {
+        viewer.classList.add('open');
+        fit();
+        draw();
+      });
+
+      const zoom = (event: WheelEvent) => {
+        event.preventDefault();
+        const step = Math.exp(-event.deltaY / 400);
+        const next = Math.min(Math.max(scale * step, 0.1), 12);
+        x = event.clientX - ((event.clientX - x) * next) / scale;
+        y = event.clientY - ((event.clientY - y) * next) / scale;
+        scale = next;
+        stage.style.transition = '';
+        draw();
+      };
+
+      let held: number | null = null;
+      let originX = 0;
+      let originY = 0;
+      let moved = false;
+
+      const grab = (event: PointerEvent) => {
+        if (event.button !== 0) return;
+        held = event.pointerId;
+        moved = false;
+        originX = event.clientX - x;
+        originY = event.clientY - y;
+        viewer.setPointerCapture(event.pointerId);
+        viewer.classList.add('dragging');
+        stage.style.transition = '';
+        event.preventDefault();
+      };
+
+      const drag = (event: PointerEvent) => {
+        if (held !== event.pointerId) return;
+        const next = { x: event.clientX - originX, y: event.clientY - originY };
+        if (Math.abs(next.x - x) + Math.abs(next.y - y) > 0) moved = true;
+        x = next.x;
+        y = next.y;
+        draw();
+      };
+
+      const release = (event: PointerEvent) => {
+        if (held === event.pointerId) viewer.releasePointerCapture(event.pointerId);
+        held = null;
+        viewer.classList.remove('dragging');
+      };
+
+      const close = () => {
+        document.body.style.overflow = '';
+        removeEventListener('keydown', key);
+        stage.style.transition = ease;
+        viewer.classList.remove('open');
+
+        const back = source.getBoundingClientRect();
+        scale = back.width / width;
+        x = back.left;
+        y = back.top;
+        draw();
+
+        if (still) viewer.remove();
+        else viewer.addEventListener('transitionend', () => viewer.remove(), { once: true });
+      };
+
+      const key = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') close();
+      };
+
+      viewer.addEventListener('wheel', zoom, { passive: false });
+      viewer.addEventListener('pointerdown', grab);
+      viewer.addEventListener('pointermove', drag);
+      viewer.addEventListener('pointerup', release);
+      viewer.addEventListener('pointercancel', release);
+      viewer.addEventListener('dblclick', close);
+      viewer.addEventListener('click', (event) => {
+        if (!moved && event.target === viewer) close();
+      });
+      addEventListener('keydown', key);
+    };
+
+    for (const diagram of diagrams) {
+      diagram.tabIndex = 0;
+      diagram.setAttribute('role', 'button');
+      diagram.addEventListener('mousedown', (event) => event.preventDefault());
+      diagram.addEventListener('click', () => open(diagram));
+      diagram.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open(diagram);
+        }
+      });
+    }
+  }
+</script>

@@ -18,6 +18,8 @@
   --color-text-3: #4f4b44;
   --color-accent: #d39b2e;
   --color-accent-2: #f3c471;
+  --color-added: #8a9a5b;
+  --color-removed: #b0655c;
 
   --font-mono: "Gohu", ui-monospace, monospace;
   --text-base: 14px;
@@ -166,4 +168,189 @@ textarea:focus-visible {
   border-left: 1px solid var(--color-border);
   padding-left: 2ch;
   color: var(--color-text-3);
+}
+
+.prose pre[data-file]::before {
+  content: attr(data-file);
+  position: sticky;
+  left: 0;
+  display: block;
+  color: var(--color-text-3);
+  margin-bottom: var(--spacing);
+}
+
+.prose table {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  border-collapse: separate;
+  border-spacing: 2ch var(--spacing);
+  color: var(--color-text-2);
+}
+
+.prose th {
+  text-align: left;
+  color: var(--color-text-3);
+  text-transform: uppercase;
+}
+
+.prose figure {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.prose figcaption {
+  color: var(--color-text-3);
+  margin-top: var(--spacing);
+}
+
+.prose img {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.sketch {
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+  background: var(--color-bg);
+  user-select: none;
+}
+
+.sketch-center {
+  margin-inline: auto;
+}
+
+.sketch:focus {
+  outline: none;
+}
+
+.sketch:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.sketch {
+  cursor: zoom-in;
+}
+
+.sketch-viewer {
+  user-select: none;
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  background: var(--color-bg);
+  cursor: grab;
+  transition: opacity var(--duration);
+}
+
+.sketch-viewer.open {
+  opacity: 1;
+}
+
+.sketch-viewer.dragging {
+  cursor: grabbing;
+}
+
+.sketch-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+.sketch-stage svg {
+  max-width: none;
+  cursor: default;
+}
+
+.sketch-box {
+  fill: var(--color-surface);
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.sketch-wire {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.sketch-lip {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.sketch-box.sketch-muted {
+  fill: var(--color-bg);
+}
+
+.sketch-box.sketch-focus {
+  stroke: var(--color-accent);
+}
+
+.sketch-label.sketch-muted {
+  fill: var(--color-text-2);
+}
+
+.sketch-label.sketch-focus {
+  fill: var(--color-accent);
+}
+
+.sketch-body {
+  fill: var(--color-text-2);
+}
+
+.sketch-group {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+}
+
+.sketch-dotted {
+  stroke-dasharray: 1 3;
+}
+
+.sketch-dashed {
+  stroke-dasharray: 3 3;
+}
+
+.sketch-head {
+  fill: var(--color-accent);
+}
+
+.sketch-label {
+  fill: var(--color-text);
+}
+
+.sketch-note {
+  fill: var(--color-text-3);
+}
+
+.sketch-mask {
+  fill: var(--color-bg);
+  stroke: none;
+}
+
+.sketch-filled {
+  fill: var(--color-surface-2);
+}
+
+.sketch-filled.sketch-accent {
+  fill: var(--color-accent);
+}
+
+.sketch-dot {
+  fill: var(--color-text-2);
+}
+
+.sketch-wire.sketch-accent {
+  stroke: var(--color-accent);
+}
+
+.sketch-dot.sketch-accent {
+  fill: var(--color-accent);
 }
