@@ -10,15 +10,10 @@ const { title, description } = Astro.props;
 const nav = [
   { href: '/about', label: 'about' },
   { href: '/projects', label: 'projects' },
-  { href: '/blog', label: 'blog' },
+  { href: '/writeups', label: 'writeups' },
   { href: '/contact', label: 'contact' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-const links = [
-  { label: 'github', href: 'https://github.com/Duisternis' },
-  { label: 'linkedin', href: 'https://www.linkedin.com/in/varnan-matela' },
-  { label: 'mail', href: 'mailto:nightisbad1@gmail.com' },
-];
 ---
 
 <!doctype html>
@@ -29,6 +24,7 @@ const links = [
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="alternate" type="application/rss+xml" title="varnan matela" href="/rss.xml" />
   </head>
   <body>
     <div class="frame">
@@ -53,19 +49,16 @@ const links = [
           }
         </nav>
 
-        <div class="block">
-          {
-            links.map((link) => (
-              <a
-                class="link"
-                href={link.href}
-                target={link.href.startsWith('mailto:') ? undefined : '_blank'}
-                rel={link.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
-              >
-                {link.label}
-              </a>
-            ))
-          }
+        <div class="block icons">
+          <a href="https://github.com/Duisternis" target="_blank" rel="noopener noreferrer" aria-label="github">
+            <span class="icon" style="--icon: url(/icons/github.png)" />
+          </a>
+          <a href="https://www.linkedin.com/in/varnan-matela" target="_blank" rel="noopener noreferrer" aria-label="linkedin">
+            <span class="icon" style="--icon: url(/icons/linkedin.png)" />
+          </a>
+          <a href="/rss.xml" aria-label="rss feed">
+            <span class="icon" style="--icon: url(/icons/rss.png)" />
+          </a>
         </div>
       </div>
 
@@ -134,12 +127,26 @@ const links = [
     color: var(--color-accent);
   }
 
-  .link {
+  .icons {
+    flex-direction: row;
+    gap: 2ch;
+  }
+
+  .icons a {
     color: var(--color-text-3);
   }
 
-  .link:hover {
+  .icons a:hover {
     color: var(--color-accent);
+  }
+
+  .icon {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    mask: var(--icon) center / contain no-repeat;
+    -webkit-mask: var(--icon) center / contain no-repeat;
   }
 
   .main {
