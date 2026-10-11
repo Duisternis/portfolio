@@ -1,14 +1,14 @@
 import type { ShikiTransformer, ThemeRegistration } from 'shiki';
 
 const palette = {
-  bg: '#121211',
-  text: '#d8d4c8',
-  muted: '#8b8376',
-  dim: '#4f4b44',
-  accent: '#d39b2e',
-  accent2: '#f3c471',
-  added: '#8a9a5b',
-  removed: '#b0655c',
+  bg: 'var(--color-surface)',
+  text: 'var(--color-text)',
+  muted: 'var(--color-text-2)',
+  dim: 'var(--color-text-3)',
+  accent: 'var(--color-accent)',
+  accent2: 'var(--color-accent-2)',
+  added: 'var(--color-added)',
+  removed: 'var(--color-removed)',
 };
 
 export const theme: ThemeRegistration = {

@@ -1,10 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import badApple from '../data/bad_apple.json';
-
-const frames = badApple.frames.map((frame) => frame.content.join('\n'));
-const interval = 1000 / badApple.animation.frameRate;
 
 const [current] = (await getCollection('projects')).sort(
   (a, b) =>
@@ -21,7 +17,7 @@ const stamp = (date: Date) => date.toISOString().slice(0, 10).replace(/-/g, '.')
 ---
 
 <Base title="index" description="software engineer. cloud and browser security, internal tooling.">
-  <pre class="anim" aria-hidden="true">{frames[0]}</pre>
+  <canvas class="anim" width="140" height="108" aria-hidden="true"></canvas>
 
   <div slot="meta">
     <p class="key">project</p>
@@ -38,14 +34,64 @@ const stamp = (date: Date) => date.toISOString().slice(0, 10).replace(/-/g, '.')
   </div>
 </Base>
 
-<script is:inline define:vars={{ frames, interval }}>
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const el = document.querySelector('.anim');
-    let i = 0;
-    setInterval(() => {
-      i = (i + 1) % frames.length;
-      el.textContent = frames[i];
-    }, interval);
+<script>
+  const W = 140;
+  const H = 108;
+  const FPS = 30;
+  const STILL = 1500;
+  const BYTES = (W * H) / 8;
+
+  const canvas = document.querySelector<HTMLCanvasElement>('.anim')!;
+  const ctx = canvas.getContext('2d')!;
+  const image = ctx.createImageData(W, H);
+  const rgb = (token: string) => {
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+    ctx.fillRect(0, 0, 1, 1);
+    return ctx.getImageData(0, 0, 1, 1).data;
+  };
+  const [r, g, b] = rgb('--color-text');
+  ctx.clearRect(0, 0, W, H);
+
+  const res = await fetch('/badapple.dat');
+  if (!res.ok || !res.body) throw new Error(`badapple fetch failed: ${res.status}`);
+  const data = new Uint8Array(await new Response(res.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+  const total = data.length / BYTES;
+
+  const bits = new Uint8Array(BYTES);
+  let at = -1;
+
+  function step(to: number) {
+    if (to < at) {
+      bits.fill(0);
+      at = -1;
+    }
+    for (; at < to; at++) {
+      const base = (at + 1) * BYTES;
+      for (let i = 0; i < BYTES; i++) bits[i] ^= data[base + i];
+    }
+    for (let i = 0; i < W * H; i++) {
+      const on = bits[i >> 3] & (0x80 >> (i & 7));
+      const o = i * 4;
+      image.data[o] = r;
+      image.data[o + 1] = g;
+      image.data[o + 2] = b;
+      image.data[o + 3] = on ? 255 : 0;
+    }
+    ctx.putImageData(image, 0, 0);
+  }
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    step(STILL);
+  } else {
+    const start = performance.now();
+    let shown = -1;
+    const tick = (now: number) => {
+      const frame = Math.floor(((now - start) * FPS) / 1000) % total;
+      if (frame !== shown) step(frame);
+      shown = frame;
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 </script>
 
@@ -61,9 +107,9 @@ const stamp = (date: Date) => date.toISOString().slice(0, 10).replace(/-/g, '.')
   }
 
   .anim {
-    color: var(--color-text-2);
-    line-height: 1;
-    white-space: pre;
-    overflow: hidden;
+    width: 100%;
+    max-width: 80ch;
+    aspect-ratio: 140 / 108;
+    image-rendering: pixelated;
   }
 </style>

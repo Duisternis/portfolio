@@ -18,10 +18,10 @@ Define these once and reuse them everywhere. Do not introduce one-off values unl
 - `surface` — slightly lighter charcoal (elevated)
 - `surface-2` — dark grey (secondary)
 - `border` — low-contrast grey, visible but not assertive
-- `text` — warm off-white
-- `text-2` — muted grey
-- `text-3` — dim grey (metadata)
-- `accent` — muted amber
+- `text` — pure white
+- `text-2` — muted grey, 11:1 or better on `bg`
+- `text-3` — dim grey (metadata), 6.5:1 or better on `bg`; never below 4.5:1
+- `accent` — one cool indicator colour; indigo by default
 
 **Type**
 
@@ -47,7 +47,11 @@ Define these once and reuse them everywhere. Do not introduce one-off values unl
 
 ## Accent
 
-Amber is an indicator light, not a brand color. Use it for active navigation, links, focus states, selected elements, small status indicators, and small graphical details.
+Palettes are `:root[data-theme='name']` blocks in `global.css`: indigo, amber, cyan, green,
+violet, coral, mint, blue, mono. The active one is `theme` in `src/layouts/Base.astro`.
+Nothing outside `global.css` names a colour; shiki reads the same custom properties.
+
+The accent is an indicator light, not a brand color. Use it for active navigation, links, focus states, selected elements, small status indicators, and small graphical details.
 
 Never use it as a large surface, a gradient, or a glow. The interface stays predominantly neutral.
 

@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const theme = 'indigo';
 const nav = [
   { href: '/about', label: 'about' },
   { href: '/projects', label: 'projects' },
@@ -17,7 +18,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme={theme}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
